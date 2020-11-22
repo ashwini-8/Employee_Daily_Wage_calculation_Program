@@ -11,39 +11,58 @@ totalEmpHrs=0
 totalWorkingDays=0 
 totalSalary=0 
 
+declare -A dayWiseWages 
 function calculateDailyWage() 
 { 
 	 empHrs=$1 
- 	 daySalary=$(( $empHrs * $EMP_RATE_PER_HR )) 
-	 echo $daySalary 
+ 	daySalary=$(( $empHrs * $EMP_RATE_PER_HR )) 
+ 	echo $daySalary 
 }
-
 function getWorkingHours() 
 { 
-	 case $1 in 
- 		$IS_FULL_TIME ) empHrs=8  
+ 	case $1 in 
+		 $IS_FULL_TIME ) empHrs=8  
 			;; 
- 		$IS_PART_TIME ) empHrs=4 
-			 ;; 
-		*) empHrs=0 
+ 		$IS_PART_TIME ) empHrs=4  
+			;; 
+		 *) empHrs=0 
  			;; 
-	 esac 
+ 	esac 
  echo $empHrs 
 }
 
-while(( $totalWorkHours < $MAX_HRS_IN_MONTH && $totalWorkingDays < $NUM_WORKING_DAYS )) 
+while(( $totalWorkHours < $MAX_HRS_IN_MONTH && $totalWorkingDays < $NUM_WORKING_DAYS ))
 do 
-	 ((totalWorkingDays++)) 
+	((totalWorkingDays++)) 
 
-	 workHours="$( getWorkingHours $(( RANDOM%3 )) )" 
+ 	workHours="$( getWorkingHours $(( RANDOM%3 )) )" 
 
-	 echo "Work hours from function getWorkingHours()::::::::::>>> $workHours " 
+	echo "Work hours from function getWorkingHours()::::::::::>>> $workHours "  
 
-	totalWorkHours=$(( $totalEmpHrs+$empHrs))
-	
+	totalWorkHours=$(( $totalWorkHours + $workHours )) 
+
+ 	echo -e "TotalWorkHours: $totalWorkHours\n" 
+
 	empDailyWage[$totalWorkingDays]="$( calculateDailyWage $workHours )" 
+ 
+ 	dayWiseWages[$totalWorkingDays]="$(calculateDailyWage $workHours)" 
+
 done
 
-totalSalary=$(( $totalEmpHrs*$EMP_RATE_PER_HR ))
-echo "Total Salary is $totalSalary"
+totalSalary=$(( $totalWorkHours * $EMP_RATE_PER_HR )); 
+
+echo -e "\n::::::::::::Printing Days from array::::::" 
+
+echo ${!empDailyWage[@]} 
+
+echo -e "\n::::::::::::Printing salary stored day wise in an array:::::::::::::::" echo ${empDailyWage[@]} 
+
+echo -e "\n::::::::::::Printing Days from dictionary::::::" 
+
+echo ${!dayWiseWages[@]} 
+
+echo -e "\n::::::::::::Printing salary stored day wise in dictionary:::::::::::::::" echo ${dayWiseWages[@]} 
+
+echo "Total salary: $totalSalary"
+
 
