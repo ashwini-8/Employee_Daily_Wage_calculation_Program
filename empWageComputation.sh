@@ -11,6 +11,13 @@ totalEmpHrs=0
 totalWorkingDays=0 
 totalSalary=0 
 
+function calculateDailyWage() 
+{ 
+	 empHrs=$1 
+ 	 daySalary=$(( $empHrs * $EMP_RATE_PER_HR )) 
+	 echo $daySalary 
+}
+
 function getWorkingHours() 
 { 
 	 case $1 in 
@@ -33,6 +40,8 @@ do
 	 echo "Work hours from function getWorkingHours()::::::::::>>> $workHours " 
 
 	totalWorkHours=$(( $totalEmpHrs+$empHrs))
+	
+	empDailyWage[$totalWorkingDays]="$( calculateDailyWage $workHours )" 
 done
 
 totalSalary=$(( $totalEmpHrs*$EMP_RATE_PER_HR ))
